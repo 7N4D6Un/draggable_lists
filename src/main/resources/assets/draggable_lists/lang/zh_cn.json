@@ -1,0 +1,15 @@
+{
+  "modmenu.nameTranslation.draggable_lists": "可拖动列表",
+  "modmenu.descriptionTranslation.draggable_lists": "可拖动的资源包、数据包、服务器列表。",
+
+  "draggable_lists.config.title": "可拖动列表 配置",
+  "draggable_lists.config.category.general": "常规",
+  "draggable_lists.config.disable_resource_pack_arrows": "禁用资源包箭头",
+  "draggable_lists.config.disable_resource_pack_arrows.tooltip": "隐藏资源包条目上的上下箭头。",
+  "draggable_lists.config.disable_server_arrows": "禁用服务器列表箭头",
+  "draggable_lists.config.disable_server_arrows.tooltip": "隐藏服务器列表条目上的上下箭头。",
+  "draggable_lists.config.resource_pack_dragging": "资源包拖动",
+  "draggable_lists.config.resource_pack_dragging.tooltip": "允许拖动资源包条目来重新排序。",
+  "draggable_lists.config.server_dragging": "服务器拖动",
+  "draggable_lists.config.server_dragging.tooltip": "允许拖动服务器条目来重新排序。"
+}

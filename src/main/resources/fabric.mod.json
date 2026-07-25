@@ -1,0 +1,25 @@
+{
+  "schemaVersion": 1,
+  "id": "draggable_lists",
+  "version": "${version}",
+  "name": "Draggable Lists",
+  "description": "Draggable resource packs, datapacks and servers.",
+  "authors": ["FleTime", "MrMelon54", "proxsyi"],
+  "contact": {
+    "sources": "https://github.com/7N4D6Un/draggable_lists"
+  },
+  "license": "GPL-3.0-only",
+  "icon": "icon.png",
+  "environment": "client",
+  "entrypoints": {
+    "main": ["com.mrmelon54.DraggableLists.fabric.DraggableListsFabric"],
+    "modmenu": ["com.mrmelon54.DraggableLists.fabric.ModMenuIntegration"]
+  },
+  "accessWidener": "draggable_lists.accesswidener",
+  "mixins": ["draggable_lists.mixins.json"],
+  "depends": {
+    "fabricloader": ">=0.18.4",
+    "minecraft": ">=26.1",
+    "cloth-config": "*"
+  }
+}

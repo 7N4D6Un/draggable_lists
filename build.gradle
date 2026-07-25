@@ -1,88 +1,58 @@
 plugins {
-    id "architectury-plugin" version "3.4-SNAPSHOT"
-    id "dev.architectury.loom" version "1.10-SNAPSHOT" apply false
-    id "io.github.pacifistmc.forgix" version "1.2.9"
-    id "org.ajoberstar.grgit" version "5.3.0"
+	id 'net.fabricmc.fabric-loom' version "${loom_version}"
+	id 'maven-publish'
 }
 
-architectury {
-    minecraft = rootProject.minecraft_version
+version = project.mod_version
+group = project.maven_group
+
+repositories {
 }
 
-subprojects {
-    apply plugin: "dev.architectury.loom"
-
-    loom {
-        silentMojangMappingsLicense()
-    }
-
-    dependencies {
-        minecraft "com.mojang:minecraft:${rootProject.minecraft_version}"
-        // The following line declares the mojmap mappings, you may use other mappings as well
-        mappings loom.officialMojangMappings()
-        // The following line declares the yarn mappings you may select this one as well.
-        // mappings "net.fabricmc:yarn:1.19.4+build.2:v2"
-    }
-
-    build.finalizedBy(mergeJars)
-    assemble.finalizedBy(mergeJars)
+dependencies {
+	minecraft "com.mojang:minecraft:${project.minecraft_version}"
+	implementation "net.fabricmc:fabric-loader:${project.loader_version}"
+	implementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_api_version}"
+	implementation files("libs/cloth-config-${project.cloth_config_version}.jar")
+	implementation files("libs/modmenu-${project.modmenu_version}.jar")
 }
 
-allprojects {
-    apply plugin: "java"
-    apply plugin: "architectury-plugin"
-    apply plugin: "maven-publish"
+processResources {
+	def version = project.version
+	inputs.property "version", version
 
-    archivesBaseName = rootProject.archives_base_name
-    version = rootProject.mod_version
-    group = rootProject.maven_group
-
-    repositories {
-        // Add repositories to retrieve artifacts from in here.
-        // You should only use this when depending on other mods because
-        // Loom adds the essential maven repositories to download Minecraft and libraries from automatically.
-        // See https://docs.gradle.org/current/userguide/declaring_repositories.html
-        // for more information about repositories.
-        maven { url "https://maven.shedaniel.me/" }
-        maven { url "https://maven.terraformersmc.com/releases/" }
-    }
-
-    tasks.withType(JavaCompile) {
-        options.encoding = "UTF-8"
-        options.release = 21
-    }
-
-    java {
-        withSourcesJar()
-    }
+	filesMatching("fabric.mod.json") {
+		expand "version": version
+	}
 }
 
-forgix {
-    group = "com.mrmelon54.DraggableLists"
-    mergedJarName = "${project.archivesBaseName}-mc${project.minecraft_version}-${project.mod_version}-${getVersionMetadata()}.jar"
-    outputDir = "build/libs/merged"
+tasks.withType(JavaCompile).configureEach {
+	it.options.release = 25
 }
 
-def getVersionMetadata() {
-    def build_id = System.getenv("GITHUB_RUN_NUMBER")
+java {
+	withSourcesJar()
 
-    // CI builds only
-    if (build_id != null) {
-        return "build.${build_id}"
-    }
+	sourceCompatibility = JavaVersion.VERSION_25
+	targetCompatibility = JavaVersion.VERSION_25
+}
 
-    if (grgit != null) {
-        def head = grgit.head()
-        def id = head.abbreviatedId
+jar {
+	def projectName = project.name
+	inputs.property "projectName", projectName
 
-        // Flag the build if the build tree is not clean
-        if (!grgit.status().clean) {
-            id += "-dirty"
-        }
+	from("LICENSE") {
+		rename { "${it}_$projectName"}
+	}
+}
 
-        return "rev.${id}"
-    }
+publishing {
+	publications {
+		create("mavenJava", MavenPublication) {
+			from components.java
+		}
+	}
 
-    // No tracking information could be found about the build
-    return "unknown"
+	repositories {
+	}
 }

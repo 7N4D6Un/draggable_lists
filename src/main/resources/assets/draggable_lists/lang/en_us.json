@@ -1,0 +1,12 @@
+{
+  "draggable_lists.config.title": "Draggable Lists Config",
+  "draggable_lists.config.category.general": "General",
+  "draggable_lists.config.disable_resource_pack_arrows": "Disable Resource Pack Arrows",
+  "draggable_lists.config.disable_resource_pack_arrows.tooltip": "Hides the up/down arrows on resource pack entries. Dragging replaces them.",
+  "draggable_lists.config.disable_server_arrows": "Disable Server Arrows",
+  "draggable_lists.config.disable_server_arrows.tooltip": "Hides the up/down arrows on server list entries. Dragging replaces them.",
+  "draggable_lists.config.resource_pack_dragging": "Resource Pack Dragging",
+  "draggable_lists.config.resource_pack_dragging.tooltip": "Allows dragging resource pack entries to reorder them.",
+  "draggable_lists.config.server_dragging": "Server Dragging",
+  "draggable_lists.config.server_dragging.tooltip": "Allows dragging server entries to reorder them."
+}
