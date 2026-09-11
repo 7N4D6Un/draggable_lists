@@ -30,7 +30,7 @@ public abstract class TransferableSelectionListMixin extends ObjectSelectionList
 
     @Override
     protected void extractListItems(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float tickDelta) {
-        if (isDragging()) {
+        if (draggable_lists$dragManager.isDragging()) {
             draggable_lists$dragManager.renderListItems(guiGraphics, mouseX, mouseY, tickDelta);
         } else {
             super.extractListItems(guiGraphics, mouseX, mouseY, tickDelta);
@@ -136,28 +136,14 @@ public abstract class TransferableSelectionListMixin extends ObjectSelectionList
 
     @Override
     public int draggable_lists$getItemCount() {
-        int count = 0;
-        for (TransferableSelectionList.Entry entry : children()) {
-            if (entry instanceof TransferableSelectionList.PackEntry) count++;
-        }
-        return count;
+        return (int) children().stream().filter(TransferableSelectionList.PackEntry.class::isInstance).count();
     }
 
     @Override
     public void draggable_lists$renderItem(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float tickDelta, int i, int rowLeft, int rowTop, int rowWidth, int rowHeight) {
         TransferableSelectionList.Entry entry = children().get(packOnlyToChildIndex(i));
-        int oldX = entry.getX();
-        int oldY = entry.getY();
-        int oldHeight = entry.getHeight();
-        entry.setX(rowLeft);
-        entry.setY(rowTop);
-        entry.setWidth(rowWidth);
-        entry.setHeight(rowHeight);
-        extractItem(guiGraphics, mouseX, mouseY, tickDelta, entry);
-        entry.setX(oldX);
-        entry.setY(oldY);
-        entry.setWidth(rowWidth);
-        entry.setHeight(oldHeight);
+        DragManager.renderEntryAt(entry, rowLeft, rowTop, rowWidth, rowHeight, rowWidth,
+                () -> extractItem(guiGraphics, mouseX, mouseY, tickDelta, entry));
     }
 
     @Unique

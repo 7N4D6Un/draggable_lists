@@ -30,10 +30,8 @@ public abstract class PackSelectionModel_EntryBaseMixin implements AbstractPackD
 
         List<Pack> list = getSelfList();
         list.remove(pack);
-        // j can be == original list size (dragging below last item); cap after removal
         list.add(Math.min(j, list.size()), pack);
 
-        // get all fixed position resource packs, remove them and add them all at the end
         Stream<Pack> packStream = list.stream().filter(Pack::isFixedPosition);
         List<Pack> list1 = packStream.toList();
         list.removeAll(list1);

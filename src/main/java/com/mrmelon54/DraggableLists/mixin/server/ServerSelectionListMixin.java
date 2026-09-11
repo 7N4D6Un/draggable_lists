@@ -30,19 +30,16 @@ public abstract class ServerSelectionListMixin extends ObjectSelectionList<Serve
     @Shadow
     public abstract void updateOnlineServers(ServerList serverList);
 
-    @Shadow
-    public abstract int getRowWidth();
-
     @Unique
     private final DragManager<ServerData, ServerSelectionList.OnlineServerEntry> draggable_lists$dragManager = new DragManager<>(this);
 
-    public ServerSelectionListMixin(Minecraft minecraftClient, int i, int j, int k, int l, int m) {
-        super(minecraftClient, i, j, k, l);
+    public ServerSelectionListMixin(JoinMultiplayerScreen screen, Minecraft minecraft, int width, int height, int y, int itemHeight) {
+        super(minecraft, width, height, y, itemHeight);
     }
 
     @Override
     protected void extractListItems(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float tickDelta) {
-        if (isDragging()) {
+        if (draggable_lists$dragManager.isDragging()) {
             draggable_lists$dragManager.renderListItems(guiGraphics, mouseX, mouseY, tickDelta);
         } else {
             super.extractListItems(guiGraphics, mouseX, mouseY, tickDelta);
@@ -57,7 +54,7 @@ public abstract class ServerSelectionListMixin extends ObjectSelectionList<Serve
 
     @Override
     public boolean mouseDragged(MouseButtonEvent event, double deltaX, double deltaY) {
-        if (ModConfig.serverDraggingEnabled.isEnabled() && draggable_lists$dragManager.mouseDragged(event.x(), event.y(), event.button(), deltaX, deltaY)) return true;
+        if (ModConfig.serverDraggingEnabled.isEnabled() && !isOverScrollbar(event.x(), event.y()) && draggable_lists$dragManager.mouseDragged(event.x(), event.y(), event.button(), deltaX, deltaY)) return true;
         return super.mouseDragged(event, deltaX, deltaY);
     }
 
@@ -149,24 +146,13 @@ public abstract class ServerSelectionListMixin extends ObjectSelectionList<Serve
 
     @Override
     public int draggable_lists$getItemCount() {
-        return getItemCount();
+        return (int) children().stream().filter(ServerSelectionList.OnlineServerEntry.class::isInstance).count();
     }
 
     @Override
     public void draggable_lists$renderItem(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float tickDelta, int i, int rowLeft, int rowTop, int rowWidth, int rowHeight) {
         ServerSelectionList.Entry entry = children().get(i);
-        int oldX = entry.getX();
-        int oldY = entry.getY();
-        int oldWidth = entry.getWidth();
-        int oldHeight = entry.getHeight();
-        entry.setX(rowLeft);
-        entry.setY(rowTop);
-        entry.setWidth(rowWidth);
-        entry.setHeight(rowHeight);
-        extractItem(guiGraphics, mouseX, mouseY, tickDelta, entry);
-        entry.setX(oldX);
-        entry.setY(oldY);
-        entry.setWidth(oldWidth);
-        entry.setHeight(oldHeight);
+        DragManager.renderEntryAt(entry, rowLeft, rowTop, rowWidth, rowHeight, rowWidth,
+                () -> extractItem(guiGraphics, mouseX, mouseY, tickDelta, entry));
     }
 }

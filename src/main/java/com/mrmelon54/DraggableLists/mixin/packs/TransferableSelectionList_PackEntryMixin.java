@@ -3,6 +3,7 @@ package com.mrmelon54.DraggableLists.mixin.packs;
 import com.llamalad7.mixinextras.injector.v2.WrapWithCondition;
 import com.mojang.blaze3d.pipeline.RenderPipeline;
 import com.mrmelon54.DraggableLists.DragItem;
+import com.mrmelon54.DraggableLists.DragManager;
 import com.mrmelon54.DraggableLists.config.ModConfig;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.ObjectSelectionList;
@@ -80,18 +81,8 @@ public abstract class TransferableSelectionList_PackEntryMixin extends ObjectSel
     @Override
     public void draggable_lists$render(GuiGraphicsExtractor guiGraphics, int x, int y, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean hovered, float tickDelta) {
         if (!draggable_lists$isBeingDragged) return;
-        int oldX = getX();
-        int oldY = getY();
-        int oldHeight = getHeight();
-        setX(x);
-        setY(y);
-        setWidth(entryWidth);
-        setHeight(entryHeight);
-        extractContent(guiGraphics, mouseX, mouseY, hovered, tickDelta);
-        setX(oldX);
-        setY(oldY);
-        setWidth(parent.getRowWidth());
-        setHeight(oldHeight);
+        DragManager.renderEntryAt(this, x, y, entryWidth, entryHeight, parent.getRowWidth(),
+                () -> extractContent(guiGraphics, mouseX, mouseY, hovered, tickDelta));
     }
 
     @Override
